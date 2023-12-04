@@ -15,31 +15,40 @@ SUPER SLOW RECURSIVE SOLUTION
 
 */
 
+var hitCache map[int]int
+var cardNumbers []int
+
 func main() {
 	cards := readInput("day_4/input.txt")
+	cardNumbers = make([]int, len(cards))
 
-	amountOfCards := 0
-	amountOfCards = processCards(cards, cards)
+	// make cache for match amounts
+	hitCache = make(map[int]int)
+	for _, line := range cards {
+		gameNumber, results, ownNumbers := bruteForceSplitter(line)
+		hitCache[gameNumber] = amountOfMatches(results, ownNumbers)
+		cardNumbers[gameNumber-1] = gameNumber
+	}
+
+	amountOfCards := processCards(cardNumbers)
 
 	fmt.Println("Amount of cards:", amountOfCards)
 
 }
 
-func processCards(processList []string, allCards []string) int {
-	counter := 0
-	for _, line := range processList {
-		gameNumber, results, ownNumbers := bruteForceSplitter(line)
-		fmt.Println("Processing card", gameNumber)
-		amountOfMatches := amountOfMatches(results, ownNumbers)
-
-		if amountOfMatches > 0 {
-			lastCard := gameNumber + amountOfMatches
-			if lastCard > len(allCards) {
-				lastCard = len(allCards)
-			}
-			counter += processCards(allCards[gameNumber:lastCard], allCards)
-		}
+func processCards(cardList []int) int {
+	var counter int
+	for _, gameNumber := range cardList {
 		counter++
+		if hitCache[gameNumber] == 0 {
+			continue
+		}
+		lastCard := gameNumber + hitCache[gameNumber]
+		if lastCard > len(cardNumbers) {
+			lastCard = len(cardNumbers)
+		}
+		counter += processCards(cardNumbers[gameNumber:lastCard])
+		//fmt.Println("Processing card", gameNumber)
 	}
 	return counter
 }
