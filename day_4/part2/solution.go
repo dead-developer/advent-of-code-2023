@@ -9,12 +9,6 @@ import (
 	"strings"
 )
 
-/*
-
-SUPER SLOW RECURSIVE SOLUTION
-
-*/
-
 var hitCache map[int]int
 var cardNumbers []int
 
