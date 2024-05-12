@@ -26,7 +26,6 @@ func solution() int {
 		if lowestLocation == 0 || location < lowestLocation {
 			lowestLocation = location
 		}
-		fmt.Println("seed", seed, "->", location)
 	}
 	return lowestLocation
 
