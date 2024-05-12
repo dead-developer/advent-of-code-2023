@@ -4,6 +4,7 @@ import (
 	"AoC2023/framework"
 	"fmt"
 	"regexp"
+	"sort"
 	"strconv"
 )
 
@@ -23,17 +24,32 @@ func solution() int {
 
 	var lowestLocation int
 
+	locationCh := make(chan int, len(seeds))
 	for _, seedRange := range seeds {
-		fmt.Println("Range from", seedRange[0], "to", seedRange[0]+seedRange[1], "Size", seedRange[1])
-		for seed := seedRange[0]; seed <= seedRange[0]+seedRange[1]; seed++ {
-			location := getLocation(seed)
-			if lowestLocation == 0 || location < lowestLocation {
-				lowestLocation = location
-			}
-		}
-		fmt.Println("Range Done")
+		go getLowest(seedRange, locationCh)
 	}
+
+	for range seeds {
+		location := 0
+		location = <-locationCh
+		if lowestLocation == 0 || location < lowestLocation {
+			lowestLocation = location
+		}
+	}
+
 	return lowestLocation
+}
+
+func getLowest(seedRange [2]int, lowestLocations chan int) {
+	var lowestLocation int
+	for seed := seedRange[0]; seed <= seedRange[1]; seed++ {
+		location := getLocation(seed)
+		if lowestLocation == 0 || location < lowestLocation {
+			lowestLocation = location
+		}
+	}
+	fmt.Println("Lowest location for range:", seedRange[0], "-", seedRange[0]+seedRange[1], "is", lowestLocation)
+	lowestLocations <- lowestLocation
 }
 
 func parseSeeds(line string) [][2]int {
@@ -42,10 +58,15 @@ func parseSeeds(line string) [][2]int {
 
 	// seed ranges
 	for i := 0; i < len(hits); i += 2 {
-		seedRange := [2]int{mustConvertToInt(hits[i]), mustConvertToInt(hits[i+1])}
+		start := mustConvertToInt(hits[i])
+		end := mustConvertToInt(hits[i+1]) + start
+		seedRange := [2]int{start, end}
 		seeds = append(seeds, seedRange)
-
 	}
+	//sort seeds by start
+	sort.Slice(seeds, func(i, j int) bool {
+		return seeds[i][0] < seeds[j][0]
+	})
 
 	return seeds
 }
