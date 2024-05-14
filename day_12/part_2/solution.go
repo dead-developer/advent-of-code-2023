@@ -10,6 +10,7 @@ import (
 )
 
 // TODO: Finish
+// NOT WORKING, WIP
 
 type springs struct {
 	springs string

@@ -8,6 +8,9 @@ import (
 
 var maps [][]string
 
+// TODO: Finish
+// NOT WORKING, WIP
+
 func main() {
 	value := solution()
 	fmt.Println(value)
