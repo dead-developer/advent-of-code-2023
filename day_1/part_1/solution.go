@@ -11,7 +11,7 @@ var matchStrings = []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
 
 func main() {
 	total := solution()
-	fmt.Println("Day 1 Part 2 result:", total)
+	fmt.Println("result:", total)
 }
 
 func solution() int {
@@ -44,7 +44,7 @@ func getFirstMatchString(str string) string {
 }
 func getLastMatchString(str string) string {
 	//flip string
-	for i := len(str) - 1; i >= 0; i-- {
+	for i := len(str); i >= 0; i-- {
 		substring := str[:i]
 		for _, matchString := range matchStrings {
 			if strings.HasSuffix(substring, matchString) {

@@ -45,7 +45,7 @@ func getFirstMatchString(str string) string {
 }
 func getLastMatchString(str string) string {
 	//flip string
-	for i := len(str) - 1; i >= 0; i-- {
+	for i := len(str); i >= 0; i-- {
 		substring := str[:i]
 		for _, matchString := range matchStrings {
 			if strings.HasSuffix(substring, matchString) {
