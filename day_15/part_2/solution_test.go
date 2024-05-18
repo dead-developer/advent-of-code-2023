@@ -6,7 +6,7 @@ import (
 
 const day = 14
 const part = 1
-const correctAnswer = 501680
+const correctAnswer = 241094
 
 func TestSolution(t *testing.T) {
 	value := solution()
