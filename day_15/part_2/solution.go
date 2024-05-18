@@ -104,17 +104,3 @@ func loadData() {
 	line := lines[0]
 	steps = strings.Split(line, ",")
 }
-
-func debug() {
-	// print boxes with contents and index
-
-	for i, box := range boxes {
-		if len(box) == 0 {
-			continue
-		}
-		fmt.Printf("Box %d\n", i)
-		for _, l := range box {
-			fmt.Printf("  %s: %d\n", l.label, l.focal)
-		}
-	}
-}

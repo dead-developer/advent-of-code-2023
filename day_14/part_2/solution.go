@@ -254,26 +254,6 @@ func initStones() {
 	}
 }
 
-func displayArray() {
-	for _, line := range area {
-		for _, char := range line {
-			// unset last bit
-			char &= 0x7F
-			if char == 0 {
-				fmt.Print(".")
-			}
-			if char == 1 {
-				fmt.Print("O")
-			}
-			if char == 2 {
-				fmt.Print("#")
-			}
-
-		}
-		fmt.Println()
-	}
-}
-
 func calculateWeight() int {
 	weight := 0
 	for lineNum, line := range area {
