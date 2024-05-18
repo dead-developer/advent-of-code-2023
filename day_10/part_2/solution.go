@@ -42,7 +42,7 @@ func solution() int {
 		queue = queue[1:]
 	}
 
-	size = vector{len(lines[0]) - 1, len(lines)}
+	size = vector{len(lines[0]), len(lines)}
 	buildFillMatrix()
 
 	for y := 0; y < size.y*2; y++ {

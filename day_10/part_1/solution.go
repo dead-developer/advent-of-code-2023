@@ -161,14 +161,12 @@ func readMaze(lines []string) {
 					{x + 1, y},
 				}
 			}
-			//fmt.Println(string(element))
 
 			maze[vector{x, y}] = pipe{
 				location:   vector{x, y},
 				directions: directions,
 				distance:   -1,
 			}
-			//fmt.Println(x, y, element)
 		}
 	}
 	updateStartPipe()
