@@ -31,7 +31,7 @@ func solution() int {
 
 	initStones()
 
-	log := []int{}
+	var log []int
 
 	for i := 0; i < 1000; i++ {
 		tiltNorth()

@@ -6,8 +6,6 @@ import (
 	"strings"
 )
 
-var maps [][]string
-
 func main() {
 	value := solution()
 	fmt.Println(value)
@@ -60,12 +58,6 @@ func loadData() [][]string {
 	}
 
 	return returnValue
-}
-
-func displayArray(array [][]string) {
-	for _, line := range array {
-		fmt.Println(line)
-	}
 }
 
 func calculateWeight(array [][]string) int {

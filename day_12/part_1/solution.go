@@ -25,9 +25,9 @@ func solution() int {
 	var sum int
 	for _, arrangement := range data {
 
-		var length int = len(arrangement.springs)
+		var length = len(arrangement.springs)
 
-		var matches int = countMatches(length, arrangement)
+		var matches = countMatches(length, arrangement)
 
 		sum += matches
 	}
@@ -56,13 +56,13 @@ func known(arrangement springs) (string, string) {
 }
 
 func countMatches(length int, arrangement springs) int {
-	var max int = 1 << uint(length)
+	var maximum = 1 << uint(length)
 
 	var knownWorking, knownBroken = known(arrangement)
 
 	var matches int
 	// loop through all possible arrangements
-	for i := 0; i < max; i++ {
+	for i := 0; i < maximum; i++ {
 
 		var stringMap = intToStringMap(i, length)
 
@@ -130,8 +130,8 @@ func compareSlices(a, b []int) bool {
 
 func getBlocks(binary string) []int {
 	// loop through the arrangement and find continuous blocks of 1
-	var blocks []int = make([]int, 0)
-	var blockLength int = 0
+	var blocks = make([]int, 0)
+	var blockLength = 0
 	for j := 0; j < len(binary); j++ {
 		if binary[j] == '1' {
 			blockLength++
