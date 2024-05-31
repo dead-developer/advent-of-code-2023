@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-const day = 14
+const day = 15
 const part = 1
 const correctAnswer = 241094
 
