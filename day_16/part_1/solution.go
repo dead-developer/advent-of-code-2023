@@ -35,8 +35,6 @@ func main() {
 	value := solution()
 	fmt.Println(value)
 
-	//displayArea(area)
-	displayArea(energized)
 }
 
 func solution() int {
