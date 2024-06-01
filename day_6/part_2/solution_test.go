@@ -1,16 +1,12 @@
 package main
 
 import (
+	"AoC2023/framework"
 	"testing"
 )
 
-const day = 6
-const part = 2
 const correctAnswer = 34278221
 
 func TestSolution(t *testing.T) {
-	value := solution()
-	if value != correctAnswer {
-		t.Fatalf(`Day %d Part %d invalid result. Expect %d got %d`, day, part, correctAnswer, value)
-	}
+	framework.RunTest(correctAnswer, solution(), t)
 }
