@@ -12,21 +12,32 @@ Trying to learn Go with 2023 Advent Of Code
 `make check-all`
 
 
+# Progress
 
+Day | Part 1  | Part 2 
+:------------ |:--------|:-------
+1 | &check; |  &check;
+2 | &check; |  &check;
+3 | &check; |  &check;
+4 | &check; |  &check;
+5 | &check; |  SLOW
+6 | &check; |  &check;
+7 | &check; |  &check;
+8 | &check; |  &check;
+9 | &check; |  &check;
+10 | &check; |  &check;
+11 | &check; |  &check;
+12 | SLOW    |  
+13 | &check; | 
+14 | &check; |  &check;
+15 | &check; |  &check;
+16 | &check; |  &check;
+17 |         |   
+18 | &check; |  
+19 |         |  
+20 |         | 
+22 |         |  
+23 |         | 
+24 |         |  
 
-# Notes
-## Day 5 part 2
-My part 2 solution is unfortunately still brute force, times are on my gaming rig (7950X3D, 64GB RAM, 4090). Need to figure out some algorithm/optimizations to solve this properly.
-* part 1 method,  270 seconds
-* Concurrent: 70 seconds
-
-
-## Day 12 part 1
-Slow
-
-## Day 12 part 2
-WIP
-
-## Day 13 part 2
-WIP
 
