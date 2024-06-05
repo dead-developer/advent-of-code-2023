@@ -26,6 +26,12 @@ var area = make([][]string, 0)
 var areaWidth = 0
 var areaHeight = 0
 
+type coordinate struct {
+	x, y int
+}
+
+var fillQueue []coordinate
+
 func init() {
 	loadData()
 
@@ -75,58 +81,66 @@ func solution() int {
 
 	}
 
-	fillArea()
-	displayArea()
-	return 0
+	buildArea()
+
+	fillInside()
+	//displayArea()
+	return calculateArea()
 }
 
-//
-//
-//func fillTrenches() {
-//
-//	startFill := 0
-//	for y := 0; y < areaHeight; y++ {
-//		for x := 0; x < areaWidth; x++ {
-//			if area[y][x] != "" && startFill == 0 {
-//				startFill = 1
-//				continue
-//			}
-//
-//			if startFill == 1 {
-//				if area[y][x] != "" {
-//					startFill = 0
-//					break
-//				}
-//				if area[y][x] == "" {
-//					area[y][x] = "#"
-//				}
-//			}
-//
-//		}
-//	}
-//
-//}
-
-func loadData() {
-	lines := framework.ReadInput(dataFile)
-	exp := regexp.MustCompile(`^(.)\s(\d+)\s\((.+)\)`)
-	for _, line := range lines {
-		matches := exp.FindStringSubmatch(line)
-		if len(matches) != 4 {
-			log.Panic("invalid instruction")
+// find the first empty cell in the second row with trench above it
+func findFillStart() (int, int) {
+	for x := 0; x < areaWidth; x++ {
+		if area[0][x] == "#" && area[1][x] == "." {
+			return x, 1
 		}
-		amount, _ := strconv.Atoi(matches[2])
-		instructions = append(instructions, instruction{direction: rune(matches[1][0]), amount: amount, color: matches[3]})
 	}
+	return -1, -1
 }
 
-func fillArea() {
+func fillInside() {
+	x, y := findFillStart()
+
+	if x == -1 {
+		panic("no fill start found")
+	}
+	fillQueue = append(fillQueue, coordinate{x: x, y: y})
+	for len(fillQueue) > 0 {
+
+		cell := fillQueue[0]
+		fillQueue = fillQueue[1:]
+		if area[cell.y][cell.x] == "#" {
+			continue
+		}
+
+		area[cell.y][cell.x] = "#"
+
+		for x := cell.x - 1; x <= cell.x+1; x++ {
+			if x < 0 || x >= areaWidth {
+				continue
+			}
+			if area[cell.y][x] == "." {
+				fillQueue = append(fillQueue, coordinate{x: x, y: cell.y})
+			}
+
+		}
+
+		for y := cell.y - 1; y <= cell.y+1; y++ {
+			if y < 0 || y > areaHeight {
+				continue
+			}
+			if area[y][cell.x] == "." {
+				fillQueue = append(fillQueue, coordinate{x: cell.x, y: y})
+			}
+		}
+	}
+
+}
+
+func buildArea() {
 
 	areaWidth = gridMaxX - gridMinX + 1
 	areaHeight = gridMaxY - gridMinY + 1
-
-	println(areaWidth)
-	println(areaHeight)
 
 	area = make([][]string, areaHeight)
 	for y := 0; y < areaHeight; y++ {
@@ -144,16 +158,41 @@ func fillArea() {
 	}
 }
 
-func displayArea() {
-
-	for _, line := range area {
-		for _, element := range line {
-			if element == "." {
-				fmt.Print(".")
-			} else {
-				fmt.Print("#")
+func calculateArea() int {
+	var amount int
+	for y := 0; y < areaHeight; y++ {
+		for x := 0; x < areaWidth; x++ {
+			if area[y][x] == "#" {
+				amount++
 			}
 		}
-		fmt.Println()
+	}
+	return amount
+}
+
+func loadData() {
+	lines := framework.ReadInput(dataFile)
+	exp := regexp.MustCompile(`^(.)\s(\d+)\s\((.+)\)`)
+	for _, line := range lines {
+		matches := exp.FindStringSubmatch(line)
+		if len(matches) != 4 {
+			log.Panic("invalid instruction")
+		}
+		amount, _ := strconv.Atoi(matches[2])
+		instructions = append(instructions, instruction{direction: rune(matches[1][0]), amount: amount, color: matches[3]})
 	}
 }
+
+//func displayArea() {
+//
+//	for _, line := range area {
+//		for _, element := range line {
+//			if element == "." {
+//				fmt.Print(".")
+//			} else {
+//				fmt.Print("#")
+//			}
+//		}
+//		fmt.Println()
+//	}
+//}
