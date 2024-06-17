@@ -32,11 +32,6 @@ type coordinate struct {
 
 var fillQueue []coordinate
 
-func init() {
-	loadData()
-
-}
-
 func main() {
 	value := solution()
 	fmt.Println(value)
