@@ -11,64 +11,105 @@ import (
 
 const dataFile = "clue.txt"
 
-type part struct {
-	x, m, a, s int
+type rule struct {
+	parameter string
+	action    string
+	compareTo int
+	result    string
 }
 
 type ruleset struct {
-	rules []func(data part) string
+	rules []rule
 }
 
 var rulesets = make(map[string]ruleset)
+
+var results []uint64
 
 func main() {
 	value := solution()
 	fmt.Println(value)
 }
 
-func solution() int {
+func solution() uint64 {
 	loadData()
 
-	var sum int
+	limitData := map[string]int{
+		"xMin": 1,
+		"xMax": 4000,
+		"mMin": 1,
+		"mMax": 4000,
+		"aMin": 1,
+		"aMax": 4000,
+		"sMin": 1,
+		"sMax": 4000,
+	}
 
-	for x := 1; x <= 400; x++ {
-		for m := 1; m <= 400; m++ {
-			for a := 1; a <= 400; a++ {
-				for s := 1; s <= 400; s++ {
+	processRules("in", limitData)
 
-					partData := part{x: x, m: m, a: a, s: s}
+	var total uint64
+	for _, result := range results {
+		total += result
+	}
 
-					var currentRule = "in"
-					for {
-						result := processRules(partData, currentRule)
-						if result == "R" {
-							break
-						}
-						if result == "A" {
-							sum++
-							break
-						} else {
-							currentRule = result
-							continue
-						}
-					}
-				}
+	return total
+}
+
+func processRules(ruleName string, limitData map[string]int) {
+
+	for _, rule := range rulesets[ruleName].rules {
+
+		if rule.action == "GOTO" {
+			processRules(rule.result, limitData)
+			return
+		} else if rule.action == "R" {
+			// rejected. Stop
+			return
+		} else if rule.action == "A" {
+			addToResult(limitData)
+			return
+		} else if rule.action == "<" || rule.action == ">" {
+			newLimitData := copyMap(limitData)
+			if rule.action == "<" {
+				limitData[rule.parameter+"Min"] = rule.compareTo + 1
+				newLimitData[rule.parameter+"Max"] = rule.compareTo - 1
+			} else {
+				limitData[rule.parameter+"Max"] = rule.compareTo + 1
+				newLimitData[rule.parameter+"Min"] = rule.compareTo - 1
+			}
+
+			if rule.result == "A" {
+				addToResult(newLimitData)
+				return
+			} else if rule.result == "R" {
+				break
+			} else {
+				processRules(rule.result, newLimitData)
 			}
 		}
 	}
-
-	return sum
 }
 
-func processRules(partData part, ruleName string) string {
-	for _, ruleFunc := range rulesets[ruleName].rules {
-		ruleResult := ruleFunc(partData)
-		if ruleResult != "" {
-			return ruleResult
-		}
+func copyMap(source map[string]int) map[string]int {
+	newMap := make(map[string]int, len(source))
+	for key, val := range source {
+		newMap[key] = val
 	}
-	panic("NO RESULT FROM RULE")
-	return "FAIL"
+	return newMap
+}
+
+func addToResult(limitData map[string]int) {
+	//calculate combinations
+
+	fmt.Println(limitData)
+	var combinations uint64
+	combinations = uint64(limitData["xMax"]-limitData["xMin"]) * uint64(limitData["mMax"]-limitData["mMin"]) * uint64(limitData["aMax"]-limitData["aMin"]) * uint64(limitData["sMax"]-limitData["sMin"])
+	fmt.Println(combinations)
+	results = append(
+		results,
+		combinations,
+	)
+
 }
 
 func loadData() {
@@ -89,74 +130,39 @@ func parseRule(line string) {
 	ruleExp := regexp.MustCompile("^(.+)([<>])(.+):(.+)")
 
 	matches := exp.FindStringSubmatch(line)
+	RuleSetName := matches[1]
 
 	if len(matches) != 3 {
 		log.Panic("invalid instruction")
 	}
 
 	parseRules := strings.Split(matches[2], ",")
-	newRuleset := make([]func(data part) string, 0)
 
-	name := matches[1]
+	var newRuleset []rule
 
-	for _, rule := range parseRules {
+	for _, ruleString := range parseRules {
 
-		comparisonMatches := ruleExp.FindStringSubmatch(rule)
+		comparisonMatches := ruleExp.FindStringSubmatch(ruleString)
+
 		if len(comparisonMatches) == 5 {
-			compareToValue, _ := strconv.Atoi(comparisonMatches[3])
-			if compareToValue == 0 {
+			compareToValue, err := strconv.Atoi(comparisonMatches[3])
+			if err != nil {
 				panic("invalid rule")
 			}
-			newRuleset = append(newRuleset, func(data part) string {
-				var value int
 
-				if comparisonMatches[1] == "s" {
-					value = data.s
-				}
-				if comparisonMatches[1] == "x" {
-					value = data.x
-				}
-				if comparisonMatches[1] == "m" {
-					value = data.m
-				}
-				if comparisonMatches[1] == "a" {
-					value = data.a
-				}
-
-				if comparisonMatches[2] == "<" {
-					if value < compareToValue {
-						return comparisonMatches[4]
-					}
-				}
-				if comparisonMatches[2] == ">" {
-					if value > compareToValue {
-						return comparisonMatches[4]
-					}
-				}
-				return ""
-			})
+			newRuleset = append(newRuleset, rule{parameter: comparisonMatches[1], action: comparisonMatches[2], compareTo: compareToValue, result: comparisonMatches[4]})
 			continue
-
 		}
-
-		if rule == "A" {
-			newRuleset = append(newRuleset, func(data part) string {
-				return "A"
-			})
+		if ruleString == "A" {
+			newRuleset = append(newRuleset, rule{parameter: "", action: "A", compareTo: 0, result: ""})
 			continue
-		} else if rule == "R" {
-			newRuleset = append(newRuleset, func(data part) string {
-				return "R"
-			})
+		} else if ruleString == "R" {
+			newRuleset = append(newRuleset, rule{parameter: "", action: "R", compareTo: 0, result: ""})
 			continue
 		} else {
-			newRuleset = append(newRuleset, func(data part) string {
-				return rule
-			})
+			newRuleset = append(newRuleset, rule{parameter: "", action: "GOTO", compareTo: 0, result: ruleString})
 		}
-
 	}
-
-	rulesets[name] = ruleset{rules: newRuleset}
+	rulesets[RuleSetName] = ruleset{rules: newRuleset}
 
 }
