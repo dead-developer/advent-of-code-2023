@@ -24,14 +24,14 @@ type ruleset struct {
 
 var rulesets = make(map[string]ruleset)
 
-var results []uint64
+var results []int
 
 func main() {
 	value := solution()
 	fmt.Println(value)
 }
 
-func solution() uint64 {
+func solution() int {
 	loadData()
 
 	limitData := map[string]int{
@@ -47,7 +47,7 @@ func solution() uint64 {
 
 	processRules("in", limitData)
 
-	var total uint64
+	var total int
 	for _, result := range results {
 		total += result
 	}
@@ -101,8 +101,8 @@ func copyMap(source map[string]int) map[string]int {
 func addToResult(limitData map[string]int) {
 	//calculate combinations
 
-	var combinations uint64
-	combinations = uint64(limitData["xMax"]-limitData["xMin"]+1) * uint64(limitData["mMax"]-limitData["mMin"]+1) * uint64(limitData["aMax"]-limitData["aMin"]+1) * uint64(limitData["sMax"]-limitData["sMin"]+1)
+	var combinations int
+	combinations = (limitData["xMax"] - limitData["xMin"] + 1) * (limitData["mMax"] - limitData["mMin"] + 1) * (limitData["aMax"] - limitData["aMin"] + 1) * (limitData["sMax"] - limitData["sMin"] + 1)
 	results = append(
 		results,
 		combinations,
