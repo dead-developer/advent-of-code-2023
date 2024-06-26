@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-const dataFile = "clue.txt"
+const dataFile = "input.txt"
 
 type rule struct {
 	parameter string
@@ -70,19 +70,19 @@ func processRules(ruleName string, limitData map[string]int) {
 			return
 		} else if rule.action == "<" || rule.action == ">" {
 			newLimitData := copyMap(limitData)
+
 			if rule.action == "<" {
-				limitData[rule.parameter+"Min"] = rule.compareTo + 1
+				limitData[rule.parameter+"Min"] = rule.compareTo
 				newLimitData[rule.parameter+"Max"] = rule.compareTo - 1
 			} else {
-				limitData[rule.parameter+"Max"] = rule.compareTo + 1
-				newLimitData[rule.parameter+"Min"] = rule.compareTo - 1
+				limitData[rule.parameter+"Max"] = rule.compareTo
+				newLimitData[rule.parameter+"Min"] = rule.compareTo + 1
 			}
 
 			if rule.result == "A" {
 				addToResult(newLimitData)
-				return
 			} else if rule.result == "R" {
-				break
+
 			} else {
 				processRules(rule.result, newLimitData)
 			}
@@ -101,10 +101,8 @@ func copyMap(source map[string]int) map[string]int {
 func addToResult(limitData map[string]int) {
 	//calculate combinations
 
-	fmt.Println(limitData)
 	var combinations uint64
-	combinations = uint64(limitData["xMax"]-limitData["xMin"]) * uint64(limitData["mMax"]-limitData["mMin"]) * uint64(limitData["aMax"]-limitData["aMin"]) * uint64(limitData["sMax"]-limitData["sMin"])
-	fmt.Println(combinations)
+	combinations = uint64(limitData["xMax"]-limitData["xMin"]+1) * uint64(limitData["mMax"]-limitData["mMin"]+1) * uint64(limitData["aMax"]-limitData["aMin"]+1) * uint64(limitData["sMax"]-limitData["sMin"]+1)
 	results = append(
 		results,
 		combinations,
