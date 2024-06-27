@@ -18,7 +18,7 @@ type part struct {
 var parts []part
 
 type ruleset struct {
-	rules []func(params ...interface{}) string
+	rules []func(ruleIndex int) string
 }
 
 var rulesets = make(map[string]ruleset)
@@ -33,7 +33,7 @@ func solution() int {
 
 	var sum int
 
-	for partIndex, _ := range parts {
+	for partIndex := range parts {
 
 		var currentRule = "in"
 
@@ -123,7 +123,7 @@ func parseRule(line string) {
 	}
 
 	parseRules := strings.Split(matches[2], ",")
-	newRuleset := make([]func(params ...interface{}) string, 0)
+	newRuleset := make([]func(ruleIndex int) string, 0)
 
 	name := matches[1]
 
@@ -135,21 +135,20 @@ func parseRule(line string) {
 			if compareToValue == 0 {
 				panic("invalid rule")
 			}
-			newRuleset = append(newRuleset, func(params ...interface{}) string {
+			newRuleset = append(newRuleset, func(ruleIndex int) string {
 				var value int
-				index, _ := params[0].(int)
 
 				if comparisonMatches[1] == "s" {
-					value = parts[index].s
+					value = parts[ruleIndex].s
 				}
 				if comparisonMatches[1] == "x" {
-					value = parts[index].x
+					value = parts[ruleIndex].x
 				}
 				if comparisonMatches[1] == "m" {
-					value = parts[index].m
+					value = parts[ruleIndex].m
 				}
 				if comparisonMatches[1] == "a" {
-					value = parts[index].a
+					value = parts[ruleIndex].a
 				}
 
 				if comparisonMatches[2] == "<" {
@@ -169,18 +168,18 @@ func parseRule(line string) {
 		}
 
 		if rule == "A" {
-			newRuleset = append(newRuleset, func(params ...interface{}) string {
+			newRuleset = append(newRuleset, func(ruleIndex int) string {
 				return "A"
 			})
 			continue
 		} else if rule == "R" {
-			newRuleset = append(newRuleset, func(params ...interface{}) string {
+			newRuleset = append(newRuleset, func(ruleIndex int) string {
 				return "R"
 			})
 			continue
 		} else {
-			// passthrough
-			newRuleset = append(newRuleset, func(params ...interface{}) string {
+			// pass through
+			newRuleset = append(newRuleset, func(ruleIndex int) string {
 				return rule
 			})
 		}
