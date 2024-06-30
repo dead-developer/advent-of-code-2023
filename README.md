@@ -32,8 +32,8 @@ Trying to learn Go with 2023 Advent Of Code
  16  | &check; | &check; 
  17  |         |
  18  | &check; |
- 19  | &check; | &check;
- 20  |         |
+ 19  | &check; | &check; 
+ 20  | &check; |
  22  |         |
  23  |         |
  24  |         |  
