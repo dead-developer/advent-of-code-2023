@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"regexp"
 	"testing"
 )
@@ -20,7 +21,7 @@ func getDayAndPart() (day, part string) {
 		return
 	}
 
-	matches := reg.FindStringSubmatch(dir)
+	matches := reg.FindStringSubmatch(filepath.ToSlash(dir))
 	if len(matches) != 3 {
 		log.Fatal("Error: unable to parse day and part from: ", dir)
 		return
